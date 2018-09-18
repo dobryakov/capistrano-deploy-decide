@@ -51,10 +51,8 @@ namespace :deploy do
       #e = capture('date')
       #execute("echo " + e)
       p = shared_path.to_s + "/releases-count.txt"
-      execute("touch " + p)
-      release_number = ( capture("cat " + p) ).to_i + 1
-      #execute("echo " + release_number.to_s)
-      execute("echo " + release_number.to_s + " > " + p)
+      release_number = ( `touch #{p} && cat #{p}` ).to_i + 1
+      execute("echo #{release_number} > #{p}")
       if (release_number % fetch(:keep_releases)).zero?
         invoke 'deploy:restart'
       else
